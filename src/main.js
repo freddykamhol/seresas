@@ -1,5 +1,6 @@
 import './style.css'
-const A='/assets/'
+const BASE_PATH=new URL(/* @vite-ignore */ '../',import.meta.url).pathname.replace(/\/$/,'')
+const A=new URL(/* @vite-ignore */ '../assets/',import.meta.url).pathname
 const arrow='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'
 const mail='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v12H3zM3 7l9 7 9-7"/></svg>'
 const pin='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg>'
@@ -111,5 +112,5 @@ function initEnhancements(){
     notice.querySelectorAll('[data-choice]').forEach(button=>button.addEventListener('click',()=>{localStorage.setItem('seresas-cookie-choice',button.dataset.choice);notice.classList.add('closing');setTimeout(()=>notice.remove(),250)}))
   }
 }
-function render(){const clean=location.pathname.replace(/\/$/,'')||'/';document.querySelector('#app').innerHTML=(routes[clean]||Home)();document.title=clean==='/'?'Seresas Shirt-Manufaktur | Textildruck in Holzminden':`${clean.slice(1).replace('-',' ')} | Seresas Shirt-Manufaktur`;document.querySelectorAll('[data-link]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState({},'',a.getAttribute('href'));render();scrollTo({top:0,behavior:'smooth'})}));const btn=document.querySelector('.menu-btn');btn?.addEventListener('click',()=>{const open=document.body.classList.toggle('menu-open');btn.setAttribute('aria-expanded',open)});document.body.classList.remove('menu-open');initEnhancements()}
+function render(){const path=location.pathname.startsWith(BASE_PATH)?location.pathname.slice(BASE_PATH.length):location.pathname;const clean=path.replace(/\/$/,'')||'/';document.querySelector('#app').innerHTML=(routes[clean]||Home)();document.title=clean==='/'?'Seresas Shirt-Manufaktur | Textildruck in Holzminden':`${clean.slice(1).replace('-',' ')} | Seresas Shirt-Manufaktur`;document.querySelectorAll('[data-link]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState({},'',`${BASE_PATH}${a.getAttribute('href')}`);render();scrollTo({top:0,behavior:'smooth'})}));const btn=document.querySelector('.menu-btn');btn?.addEventListener('click',()=>{const open=document.body.classList.toggle('menu-open');btn.setAttribute('aria-expanded',open)});document.body.classList.remove('menu-open');initEnhancements()}
 addEventListener('popstate',render);render()
